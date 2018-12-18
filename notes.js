@@ -1,8 +1,46 @@
+const fs = require('fs');
+
 console.log('Starting notes.js');
 
-module.exports.addNote = () => {
-    console.log('addNote');
-    return 'New Note';
+const addNote = (title, body) => {
+    let notes = [];
+    const note = {
+        title,
+        body
+    };
+
+    try {
+        const notesString = fs.readFileSync('notes-data.json');
+        notes = JSON.parse(notesString);
+    } catch (error) {
+
+    }
+
+    const duplicateNotes = notes.filter(note => note.title === title);
+
+    if (duplicateNotes.length === 0) {
+        notes.push(note);
+        fs.writeFileSync('notes-data.json', JSON.stringify(notes));
+    }else{
+        console.log('Duplicate Title Error');
+    }
 };
 
-module.exports.add = (a, b) => a + b;
+const getAll = () => {
+    console.log('Getting all notes');
+};
+
+const getNote = (title) => {
+    console.log(`Reading note "${title}"`);
+};
+
+const removeNote = (title) => {
+    console.log(`Removing note "${title}"`);
+};
+
+module.exports = {
+    addNote,
+    getAll,
+    getNote,
+    removeNote
+};
