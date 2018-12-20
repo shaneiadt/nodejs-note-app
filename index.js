@@ -1,5 +1,25 @@
 const _ = require('lodash');
-const argv = require('yargs').argv;
+
+const commands = {
+    title: {
+        describe: 'Title of the note',
+        demand: true,
+        alias: 't'
+    },
+    body: {
+        describe: 'Body of the note',
+        demand: true,
+        alias: 'b'
+    }
+}
+
+const argv = require('yargs')
+    .command('[add]', 'Add a new note.', {title:commands.title,body:commands.body})
+    .command('[list]', 'List all notes.')
+    .command('[read]', 'Read a note.', {title:commands.title})
+    .command('[remove]', 'Remove a specific note.', {title:commands.title})
+    .help()
+    .argv;
 
 const notes = require('./notes');
 
@@ -8,10 +28,10 @@ const command = argv._[0];
 
 if (command === 'add') {
     const note = notes.addNote(argv.title, argv.body);
-    if(note){
+    if (note) {
         console.log('Note added successfully.');
         notes.logNote(note);
-    }else{
+    } else {
         console.log(`Duplication Error: A note with the title ${argv.title} already exists.`);
     }
 } else if (command === 'list') {
@@ -20,17 +40,17 @@ if (command === 'add') {
     allNotes.forEach(note => notes.logNote(note));
 } else if (command === 'read') {
     const readNote = notes.getNote(argv.title);
-    if(readNote){
+    if (readNote) {
         console.log('Note retrieved successfully.');
         notes.logNote(readNote);
-    }else{
+    } else {
         console.log(`No note with the title "${argv.title}" exists.`);
     }
 } else if (command === 'remove') {
     const removedNotes = notes.removeNote(argv.title);
-    if(removedNotes){
+    if (removedNotes) {
         console.log('Note removed successfully.');
-    }else{
+    } else {
         console.log('No note with that title exists.');
     }
 } else {
